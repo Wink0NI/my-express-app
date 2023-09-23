@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title><%= text %></title>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- SweetAlert2 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+      /* styles.css */
+
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f5f5f5;
+          margin: 0;
+          padding: 0;
+      }
+      .full-height {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* 100% de la hauteur de la vue */
+      }
+
+      h1 {
+          text-align: center;
+          color: #333;
+      }
+
+      .container {
+          max-width: 400px;
+          margin: 0 auto;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: bold;
+      }
+
+      input[type="url"] {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      }
+
+      input[type="submit"] {
+          background-color: #007BFF;
+          color: #fff;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+          background-color: #0056b3;
+      }
+
+      #shortURL {
+          margin-top: 20px;
+          font-weight: bold;
+      }
+      .footer {
+          background-color: #333;
+          color: #fff;
+          padding: 20px 0;
+          margin-top: auto; /* Le footer reste en bas de la page */
+      }
+    </style>
+  </head>
+
+  <body class="full-height">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="http://localhost:8080">
+          <img src="https://cdn-icons-png.flaticon.com/512/3858/3858629.png" alt="Icône Accueil">
+        </a>
+        <a class="navbar-item pl-1" href="http://localhost:8080">LinkGenerator++</a>
+      </div>
+    
+      <div class="navbar-end">
+        <a class="navbar-item" href="http://localhost:8080">Accueil</a>
+        <a class="navbar-item" href="http://localhost:8080/status">Liste des Liens</a>
+      </div>
+    </nav>
+    
+    
+    
+    
+    
+    <section class="section">
+      <div class="container">
+        <h1 class="title"><%= text %></h1>
+        
+        <form action="/search" class="mb-6" method="POST">
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input class="input" type="text" name="query" required placeholder="Rechercher...">
+            </div>
+            <div class="control">
+              <button class="button is-primary" type="submit">Rechercher</button>
+            </div>
+          </div>
+        </form>
+        <p><%= links.length %> résultat<%= links.length > 1 ? "s" : "" %> trouvé<%= links.length > 1 ? "s" : "" %></p>
+        
+        
+        <ul>
+        <% if (links.length===0) { %>
+          <li>Vide...</li>
+        <%} else {%>
+          <% links.forEach(function(link) { %>
+          <!-- ... (autres balises HTML) ... -->
+          <li class="box" style="display: flex; align-items: center;">
+            <!-- Colonne des boutons -->
+            <div style="flex: 1;">
+              <button class="button is-primary" onclick="copyToClipboard('<%= link.shortURL %>')">Copier</button>
+              <button class="button is-danger" onclick="confirmDelete('<%= link.shortURL %>')">Supprimer</button>
+            </div>
+            <!-- Colonne des statistiques -->
+            <div style="flex: 2;">
+              <strong>ID :</strong>
+              <%= link.id %><br>
+              <strong>URL courte :</strong>
+              <%= link.shortURL %><br>
+              <strong>URL longue :</strong>
+              <%= link.longURL.length > 32 ? link.longURL.substring(0, 32) + "..." : link.longURL %><br> 
+            </div>
+          </li>
+          <% }); %>
+        <% }; %>
+        </ul>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="content has-text-centered">
+          <p>© 2023 DINAN Olivier. Tous droits réservés.</p>
+      </div>
+    </footer>  
+  </body>
+
+  <!-- Fonction JavaScript pour copier le texte dans le presse-papiers -->
+  <script>
+    const textArea = document.createElement("textarea");
+    function copyToClipboard(text) {
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      Swal.fire({
+        icon: 'success',
+        title: 'Copié avec succès!',
+        text: 'Lien copié dans le presse-papiers!',
+      });
+    }
+
+    function confirmDelete(shortURL) {
+
+      const confirmation = prompt("Pour supprimer ce lien, saisissez 'CONFIRMER':");
+
+      if (confirmation === "CONFIRMER") {
+        fetch(`http://localhost:8080/delete/${shortURL.split("/")[3]}`)
+          .then((response) => {
+            if (response.ok) {
+              // Suppression réussie
+              Swal.fire({
+                icon: 'success',
+                title: 'Lien supprimé avec succès!',
+                text: 'La page sera actualisée...',
+              }).then(() => {
+                location.href = "http://localhost:8080/status";
+                location.reload(); // Actualiser la page
+              });
+            } else {
+              // Gestion des erreurs HTTP
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur lors de la suppression du lien!',
+                text: 'Veuillez réessayer plus tard.',
+              });
+            }
+          })
+          .catch((error) => {
+            // Gestion des erreurs réseau
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur lors de la suppression du lien!',
+              text: 'Veuillez réessayer plus tard.',
+            });
+          });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Authentication incorrect...',
+          text: 'Veuillez réessayer.',
+        });
+      }
+    }
+  </script>
+</html>

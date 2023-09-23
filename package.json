@@ -1,26 +1,39 @@
 {
-    "name": "my-express-app",
-    "version": "1.0.0",
-    "description": "A sample Express.js app for Netlify",
-    "main": "app.js",
-    "scripts": {
-      "start": "node app.js"
-    },
-    "author": "Your Name",
-    "license": "MIT",
-    "dependencies": {
-      "express": "^4.17.1",
-      "serverless-http": "^2.3.2",
-      "dotenv": "^10.0.0",
-      "morgan": "^1.10.0",
-      "sqlite3": "^5.0.2",
-      "body-parser": "^1.19.1",
-      "ejs": "^3.1.6",
-      "nanoid": "^3.1.16"
-    },
-    "devDependencies": {},
-    "engines": {
-      "node": "14.x"
-    }
+  "name": "devweb-tp6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/express.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "express-dev": "cross-env NODE_ENV=development nodemon server/express.mjs",
+    "express-prod": "cross-env NODE_ENV=production node server/express.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0",
+    "loglevel": "^1.8.1",
+    "morgan": "^1.10.0",
+    "nanoid": "^5.0.1",
+    "netlify-cli": "^16.4.2",
+    "serverless-http": "^3.2.0",
+    "sqlite3": "^5.0.2",
+    "body-parser": "^1.19.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.49.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jest": "^27.4.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-security": "^1.7.1",
+    "eslint-plugin-unicorn": "^48.0.1",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3"
   }
-  
+}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Formulaire de lien raccourci</title>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+        /* styles.css */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .full-height {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* 100% de la hauteur de la vue */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #shortURL {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            margin-top: auto; /* Le footer reste en bas de la page */
+        }
+    </style>
+</head>
+
+<body class="full-height">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="http://localhost:8080">
+                <img src="https://cdn-icons-png.flaticon.com/512/3858/3858629.png" alt="Icône Accueil">
+            </a>
+            <a class="navbar-item pl-1" href="http://localhost:8080">LinkGenerator++</a>
+        </div>
+      
+        <div class="navbar-end">
+            <a class="navbar-item" href="http://localhost:8080">Accueil</a>
+            <a class="navbar-item" href="http://localhost:8080/status">Liste des Liens</a>
+        </div>
+    </nav>
+       
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Créer un lien raccourci</h1>
+            <div class="box">
+                <form action="/" method="POST">
+                    <div class="field">
+                        <label for="longURL" class="label">URL longue :</label>
+                        <div class="control">
+                            <input type="url" id="longURL" name="longURL" required class="input" placeholder="https://example.com">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <input type="submit" value="Raccourcir" class="button is-primary">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Affichage du lien raccourci -->
+            <% if (shortURL) { %>
+            <div class="box">
+                <div id="shortURL" class="notification is-success">
+                    <div class="columns is-mobile">
+                        <div class="column is-narrow">
+                            <button class="button is-info" onclick="copyToClipboard('<%= shortURL %>')">Copier</button>
+                        </div>
+                        <div class="column is-flex is-justify-content-center is-align-items-center">
+                            <p>Conversion avec succès => <%= shortURL %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                const textArea = document.createElement("textarea");
+                function copyToClipboard(text) {
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Copié avec succès!',
+                        text: 'Lien copié dans le presse-papiers!',
+                    });
+                }
+            </script>
+            <% } if (urlInvalid) { %>
+            <div class="notification is-danger">
+                <p>L'URL que vous avez saisie est invalide.</p>
+            </div>
+            <% } if (dbError) { %>
+                <div class="notification is-danger">
+                    <p>Une erreur de base de données s'est produite.</p>
+                </div>
+            <% } %>
+        </section>
+        
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <p>© 2023 DINAN Olivier. Tous droits réservés.</p>
+            </div>
+        </footer>                 
+    </body>
+</html>
