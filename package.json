@@ -11,18 +11,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "fs": "^0.0.1-security",
     "http-errors": "^2.0.0",
     "loglevel": "^1.8.1",
     "morgan": "^1.10.0",
     "nanoid": "^5.0.1",
     "netlify-cli": "^16.4.2",
     "serverless-http": "^3.2.0",
-    "sqlite3": "^5.0.2",
-    "body-parser": "^1.19.1"
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "eslint": "^8.49.0",

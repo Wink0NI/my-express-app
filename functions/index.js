@@ -5,7 +5,7 @@ exports.handler = async (event, context) => {
   try {
     // Chemin vers le fichier EJS
     const ejsFilePath = `${process.env.LAMBDA_TASK_ROOT}/views/index.ejs`;
-    console.log(ejsFilePath);
+
 
     // Lire le contenu du fichier EJS
     const ejsContent = fs.readFileSync(ejsFilePath, "utf-8");
