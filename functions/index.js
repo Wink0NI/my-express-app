@@ -35,15 +35,15 @@ exports.handler = async (event, context) => {
       body: "",
     };
 
-    const originalSend = res.send;
-    res.send = function (body) {
+    const originalSend = app.response.send;
+    app.response.send = function (body) {
       response.body += body;
-      originalSend.apply(res, arguments);
+      originalSend.apply(this, arguments);
     };
 
     app(request, response);
 
-    response.send = (body) => {
+    app.response.send = function (body) {
       response.body += body;
       resolve(response);
     };

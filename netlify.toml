@@ -7,4 +7,4 @@
   status = 200
 
 [build.environment]
-  DB_FILE = "path/to/your/database.db"
+  DB_FILE = "database/database.sqlite"
