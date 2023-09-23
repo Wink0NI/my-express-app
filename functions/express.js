@@ -11,6 +11,5 @@ router.get("/", (req, res) => {
 
 app.use(`/.netlify/functions/express`, router);
 
-module.exports.handler = async (event, context) => {
-  return require("serverless-http")(app)(event, context);
-};
+module.exports.handler = serverless(app);
+
