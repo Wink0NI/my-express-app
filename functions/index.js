@@ -1,35 +1,51 @@
-const ejs = require("ejs");
-const fs = require("fs");
+const express = require("express");
+const app = express();
+const path = require("path");
+const ejs = require("ejs"); // Importez le module EJS
+
+// Configurez Express pour utiliser EJS comme moteur de modèle
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views")); // Spécifiez le chemin vers le dossier "views"
+
+// ... (autres configurations et routes Express)
+
+// Exemple de route pour rendre la vue index.ejs
+app.get("/", (request, res) => {
+  res.render("index", { shortURL: "", urlInvalid: false, dbError: false });
+});
+
+// ... (autres routes)
 
 exports.handler = async (event, context) => {
-  try {
-    // Chemin vers le fichier EJS
-    const ejsFilePath = `${process.env.LAMBDA_TASK_ROOT}/views/index.ejs`;
+  const { httpMethod, path, body } = event;
+  const request = {
+    method: httpMethod,
+    path,
+    body: body || null,
+    query: event.queryStringParameters || {},
+    headers: event.headers,
+  };
 
-
-    // Lire le contenu du fichier EJS
-    const ejsContent = fs.readFileSync(ejsFilePath, "utf-8");
-
-    // Rendre le fichier EJS en utilisant les données que vous souhaitez passer
-    const renderedHtml = ejs.render(ejsContent, {
-      shortURL: "",
-      urlInvalid: false,
-      dbError: false,
-    });
-
-    // Retourner la réponse au format HTML
-    return {
+  return new Promise((resolve, reject) => {
+    const response = {
       statusCode: 200,
       headers: {
         "Content-Type": "text/html",
       },
-      body: renderedHtml,
+      body: "",
     };
-  } catch (error) {
-    // Gérer les erreurs
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Une erreur s'est produite lors du rendu de la page." }),
+
+    const originalSend = res.send;
+    res.send = function (body) {
+      response.body += body;
+      originalSend.apply(res, arguments);
     };
-  }
+
+    app(request, response);
+
+    response.send = (body) => {
+      response.body += body;
+      resolve(response);
+    };
+  });
 };

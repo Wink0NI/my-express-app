@@ -2,6 +2,9 @@
   functions = "functions" # Le répertoire contenant vos fonctions serverless
 
 [[redirects]]
-  from = "/api/*" # Un chemin d'accès qui déclenchera la fonction
-  to = "/.netlify/functions/myFunction" # Le chemin de la fonction serverless
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
+
+[build.environment]
+  DB_FILE = "path/to/your/database.db"
